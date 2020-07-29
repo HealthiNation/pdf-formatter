@@ -1,6 +1,9 @@
 <?php
+    namespace PDFformatter\Document;
 
-    class VideoLibraryDocument {
+    use PDFformatter\Template as Template;
+
+    class VideoLibrary {
 
         protected $content = '';
 
@@ -10,7 +13,7 @@
 
         public function formatPDF() {
             $data = $this->asArray();
-            $template = new VideoLibraryPdf();
+            $template = new Template\VideoLibrary();
 
             foreach ($data as $item) {
                 switch ($item->meta->tagName) {
