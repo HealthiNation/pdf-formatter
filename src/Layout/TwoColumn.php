@@ -1,5 +1,4 @@
 <?php
-    //require_once("./fpdf-1.8.2/fpdf.php");
     namespace PDFformatter\Layout;
 
     class TwoColumn extends FPDF

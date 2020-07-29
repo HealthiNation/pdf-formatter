@@ -1,5 +1,4 @@
 <?php
-    require_once("video-library-pdf.php");
 
     class VideoLibraryDocument {
 
