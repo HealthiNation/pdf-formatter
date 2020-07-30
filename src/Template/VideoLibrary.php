@@ -4,7 +4,7 @@
     use \stdClass;
     use \DateTime;
 
-    class VideoLibrary extends PDFformatter\Layout\TwoColumn {
+    class VideoLibrary extends \PDFformatter\Layout\TwoColumn {
 
         function __construct($orientation='P', $unit='mm', $size='A4') {
             parent::__construct($orientation, $unit, $size);
