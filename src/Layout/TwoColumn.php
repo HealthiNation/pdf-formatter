@@ -1,7 +1,9 @@
 <?php
     namespace PDFformatter\Layout;
+    
+    use \stdClass;
 
-    class TwoColumn extends FPDF
+    class TwoColumn extends \FPDF
     {
 
         protected $col = 0;

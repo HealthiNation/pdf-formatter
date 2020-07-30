@@ -2,7 +2,12 @@
     namespace PDFformatter\Document;
 
     use PDFformatter\Template as Template;
-
+    use \DOMNode;
+    use \DOMDocument;
+    use \DOMXPath;
+    use \DateTime;
+    use \stdClass;
+    
     class VideoLibrary {
 
         protected $content = '';
