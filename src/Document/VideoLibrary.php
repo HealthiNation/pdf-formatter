@@ -18,7 +18,7 @@
 
         public function formatPDF() {
             $data = $this->asArray();
-            $template = new Template\VideoLibrary();
+            $template = new Template\VideoLibrary;
 
             foreach ($data as $item) {
                 switch ($item->meta->tagName) {
