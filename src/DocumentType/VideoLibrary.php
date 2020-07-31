@@ -1,5 +1,5 @@
 <?php
-    namespace PDFformatter\Document;
+    namespace PDFformatter\DocumentType;
 
     use PDFformatter\Template as Template;
     use \DOMNode;
@@ -7,7 +7,7 @@
     use \DOMXPath;
     use \DateTime;
     use \stdClass;
-    
+
     class VideoLibrary {
 
         protected $content = '';
