@@ -1,5 +1,5 @@
 <?php
-    namespace PDFformatter\Document;
+    namespace PDFformatter\DocumentType;
 
     use \DOMNode;
     use \DOMDocument;
