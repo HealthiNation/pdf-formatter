@@ -116,9 +116,23 @@
                 }
             }
 
+            $defaultSortOption = [
+                'attribute' => 'id',
+                'order' => 'ASC'
+            ];
             $sortOption = isset($options['sort']) ? $options['sort'] : [];
+            $sortOption = array_merge($defaultSortOption, $sortOption);
 
-            $buildCategoryDocument = function($cats) use ($sortOption) {
+            $defaultStructureOption = [
+                'type' => 'flat',
+                'custom' => [
+                    'isolate_vertical' => false
+                ],
+            ];
+            $structureOption = isset($options['structure']) ? $options['structure'] : [];
+            $structureOption = array_merge($defaultStructureOption, $structureOption);
+
+            $buildCategoryDocument = function($cats) use ($sortOption, $structureOption) {
                 $xmlstr = '<?xml version="1.0" standalone="yes"?><Categories></Categories>';
 
                 $dom = new DOMDocument('1.0', 'utf-8');
