@@ -188,7 +188,27 @@
                     }
                 };
 
-                $buildNestedDocument();
+                if ($structureOption['type'] === 'nested') {
+                    $buildNestedDocument();
+
+                    if ($structureOption['custom']['isolate_vertical']) {
+                        $isolateVertical = function() use ($dom, $root) {
+                            $len = $root->childNodes->length;
+                            for ($i = 0; $i < $len; $i++) {
+                                $parentNode = $root->childNodes[$i];
+
+                                while ($parentNode->childNodes->length > 0) {
+                                    $root->appendChild($parentNode->childNodes[0]);
+                                }
+                            }
+                        };
+
+                        $isolateVertical();
+                    }
+                } else {
+                    // flat
+                    $buildFlatDocument();
+                }
 
                 /**
                  * Swap the actual elements in the DOM
@@ -216,8 +236,8 @@
                  */
                 $compare = function(DOMNode $a, DOMNode $b) use ($sortOption) {
                     // ASC (< 0)    DESC ( > 0)
-                    $attr = !empty($sortOption['attribute']) ? $sortOption['attribute'] : 'id';
-                    $order = !empty($sortOption['order']) ? $sortOption['order'] : 'ASC';
+                    $attr = $sortOption['attribute'];
+                    $order = $sortOption['order'];
 
                     if (strtolower($order) === 'desc') {
                         return strcmp($a->getAttribute($attr), $b->getAttribute($attr)) > 0;
