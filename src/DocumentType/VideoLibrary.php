@@ -23,9 +23,9 @@
             foreach ($data as $item) {
                 switch ($item->meta->tagName) {
                     case 'Category':
-                        if ($item->meta->nodeLevel === 1 && !empty($item->meta->immediateChildTagCount['Item'])) {
+                        if ($item->meta->nodeLevel === 1 && (!empty($item->meta->immediateChildTagCount['Item']) || !empty($item->meta->immediateChildTagCount['Category']))) {
                             $template->printSectionTitle($item->attributes->name);
-                        } else if ($item->meta->nodeLevel > 1 && !empty($item->meta->immediateChildTagCount['Item'])) {
+                        } else if ($item->meta->nodeLevel > 1 && (!empty($item->meta->immediateChildTagCount['Item']) || !empty($item->meta->immediateChildTagCount['Category']))) {
                             $template->printSectionSubTitle($item->attributes->name);
                         }
                         break;
@@ -116,9 +116,23 @@
                 }
             }
 
+            $defaultSortOption = [
+                'attribute' => 'id',
+                'order' => 'ASC'
+            ];
             $sortOption = isset($options['sort']) ? $options['sort'] : [];
+            $sortOption = array_merge($defaultSortOption, $sortOption);
 
-            $buildCategoryDocument = function($cats) use ($sortOption) {
+            $defaultStructureOption = [
+                'type' => 'flat',
+                'custom' => [
+                    'isolate_vertical' => false
+                ],
+            ];
+            $structureOption = isset($options['structure']) ? $options['structure'] : [];
+            $structureOption = array_merge($defaultStructureOption, $structureOption);
+
+            $buildCategoryDocument = function($cats) use ($sortOption, $structureOption) {
                 $xmlstr = '<?xml version="1.0" standalone="yes"?><Categories></Categories>';
 
                 $dom = new DOMDocument('1.0', 'utf-8');
@@ -174,7 +188,27 @@
                     }
                 };
 
-                $buildNestedDocument();
+                if ($structureOption['type'] === 'nested') {
+                    $buildNestedDocument();
+
+                    if ($structureOption['custom']['isolate_vertical']) {
+                        $isolateVertical = function() use ($dom, $root) {
+                            $len = $root->childNodes->length;
+                            for ($i = 0; $i < $len; $i++) {
+                                $parentNode = $root->childNodes[$i];
+
+                                while ($parentNode->childNodes->length > 0) {
+                                    $root->appendChild($parentNode->childNodes[0]);
+                                }
+                            }
+                        };
+
+                        $isolateVertical();
+                    }
+                } else {
+                    // flat
+                    $buildFlatDocument();
+                }
 
                 /**
                  * Swap the actual elements in the DOM
@@ -202,8 +236,8 @@
                  */
                 $compare = function(DOMNode $a, DOMNode $b) use ($sortOption) {
                     // ASC (< 0)    DESC ( > 0)
-                    $attr = !empty($sortOption['attribute']) ? $sortOption['attribute'] : 'id';
-                    $order = !empty($sortOption['order']) ? $sortOption['order'] : 'ASC';
+                    $attr = $sortOption['attribute'];
+                    $order = $sortOption['order'];
 
                     if (strtolower($order) === 'desc') {
                         return strcmp($a->getAttribute($attr), $b->getAttribute($attr)) > 0;
