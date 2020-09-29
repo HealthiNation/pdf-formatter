@@ -23,9 +23,9 @@
             foreach ($data as $item) {
                 switch ($item->meta->tagName) {
                     case 'Category':
-                        if ($item->meta->nodeLevel === 1 && !empty($item->meta->immediateChildTagCount['Item'])) {
+                        if ($item->meta->nodeLevel === 1 && (!empty($item->meta->immediateChildTagCount['Item']) || !empty($item->meta->immediateChildTagCount['Category']))) {
                             $template->printSectionTitle($item->attributes->name);
-                        } else if ($item->meta->nodeLevel > 1 && !empty($item->meta->immediateChildTagCount['Item'])) {
+                        } else if ($item->meta->nodeLevel > 1 && (!empty($item->meta->immediateChildTagCount['Item']) || !empty($item->meta->immediateChildTagCount['Category']))) {
                             $template->printSectionSubTitle($item->attributes->name);
                         }
                         break;
