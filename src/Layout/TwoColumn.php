@@ -3,7 +3,7 @@
     
     use \stdClass;
 
-    class TwoColumn extends \FPDF
+    class TwoColumn extends \tFPDF
     {
 
         protected $col = 0;
