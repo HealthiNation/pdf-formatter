@@ -41,6 +41,7 @@
             // Built-in fonts: Courier, Arial, Helvetica, Times, Symbol, ZapfDingbats
 
             $this->AddPage();
+            $this->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
         }
 
         // Page header
@@ -87,7 +88,7 @@
         function printSectionTitle($title) {
             $w = $this->colWidth - 6;
             $h = 14;
-            $this->SetFont('Helvetica','B',16); // in points
+            $this->SetFont('DejaVu','B',16); // in points
             $this->SetTextColor(255);
             $this->SetFillColor(41,171,226);   // babyblue: #29ABE2 rgb(41,171,226)
             $this->Cell($w, $h, $title,0,1,'C',true);
@@ -101,7 +102,7 @@
         function printSectionSubTitle($title) {
             $w = $this->colWidth - 6;
             $h = 10;
-            $this->SetFont('Helvetica','B',14); // in points
+            $this->SetFont('DejaVu','B',14); // in points
             $this->SetTextColor(33);
             $this->Cell($w, $h, $title,0,1,'L');
             // column break or page break caused by the Cell element would not cause any issues. So just clear them.
