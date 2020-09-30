@@ -44,6 +44,7 @@
 
             $this->AddPage();
             $this->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
+            $this->AddFont('DejaVu','B','DejaVuSansCondensed-Bold.ttf',true);
         }
 
         // Page header
