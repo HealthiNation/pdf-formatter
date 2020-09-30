@@ -1,6 +1,8 @@
 <?php
     namespace PDFformatter\Template;
 
+    require('vendor/autoload.php');
+    
     use \stdClass;
     use \DateTime;
 
