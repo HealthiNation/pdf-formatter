@@ -1,6 +1,8 @@
 <?php
     namespace PDFformatter\Template;
 
+    require $_SERVER['DOCUMENT_ROOT'] . '/api' . '/vendor/autoload.php';
+
     use \stdClass;
     use \DateTime;
 
@@ -41,6 +43,8 @@
             // Built-in fonts: Courier, Arial, Helvetica, Times, Symbol, ZapfDingbats
 
             $this->AddPage();
+            $this->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
+            $this->AddFont('DejaVu','B','DejaVuSansCondensed-Bold.ttf',true);
         }
 
         // Page header
@@ -87,7 +91,7 @@
         function printSectionTitle($title) {
             $w = $this->colWidth - 6;
             $h = 14;
-            $this->SetFont('Helvetica','B',16); // in points
+            $this->SetFont('DejaVu','B',15); // in points
             $this->SetTextColor(255);
             $this->SetFillColor(41,171,226);   // babyblue: #29ABE2 rgb(41,171,226)
             $this->Cell($w, $h, $title,0,1,'C',true);
@@ -101,7 +105,7 @@
         function printSectionSubTitle($title) {
             $w = $this->colWidth - 6;
             $h = 10;
-            $this->SetFont('Helvetica','B',14); // in points
+            $this->SetFont('DejaVu','B',12); // in points
             $this->SetTextColor(33);
             $this->Cell($w, $h, $title,0,1,'L');
             // column break or page break caused by the Cell element would not cause any issues. So just clear them.
@@ -112,9 +116,9 @@
         // Highly Customized function to print selected fields as row
         function printItem($item) {
             $h = 3.6;
-            $w = array(10, 50, 10, 14);
+            $w = array(11, 50, 9, 14);
             $border = 0;
-            $this->SetFont('Helvetica','',8);
+            $this->SetFont('DejaVu','',8);
             $this->SetTextColor(128);
 
             $x = $this->GetX();
