@@ -1,6 +1,8 @@
 <?php
     namespace PDFformatter\Layout;
     
+    require('vendor/autoload.php');
+    
     use \stdClass;
 
     class TwoColumn extends \tFPDF
