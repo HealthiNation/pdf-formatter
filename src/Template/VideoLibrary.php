@@ -118,7 +118,7 @@
             $h = 3.6;
             $w = array(11, 50, 9, 14);
             $border = 0;
-            $this->SetFont('Helvetica','',8);
+            $this->SetFont('DejaVu','',8);
             $this->SetTextColor(128);
 
             $x = $this->GetX();
