@@ -102,12 +102,24 @@
                     $cats[$record->id] = $record;
                 }
             }
-    
-            $buildCategoryDocument = function($cats) use ($options) {
-                // Todo: need to work on the option model
-                $structure = !empty($options['structure']) ? $options['structure'] : '';
-                $sortOption = !empty($options['sort']) ? $options['sort'] : [];
-    
+
+            $defaultSortOption = [
+                'attribute' => 'id',
+                'order' => 'ASC',
+                'collate' => 'en_US',
+            ];
+            $sortOption = isset($options['sort']) ? $options['sort'] : [];
+            $sortOption = array_merge($defaultSortOption, $sortOption);
+            $defaultStructureOption = [
+                'type' => 'flat',
+                'custom' => [
+                    'isolate_vertical' => false
+                ],
+            ];
+            $structureOption = isset($options['structure']) ? $options['structure'] : [];
+            $structureOption = array_merge($defaultStructureOption, $structureOption);
+
+            $buildCategoryDocument = function($cats) use ($sortOption, $structureOption) {
                 $xmlstr = '<?xml version="1.0" standalone="yes"?><Categories></Categories>';
     
                 $dom = new DOMDocument('1.0', 'utf-8');
@@ -120,7 +132,7 @@
                 $createCategoryNode = function ($data) use ($dom) {
                     $node = $dom->createElement("Category");
                     $node->setAttribute('id', $data->id);
-                    $node->setAttribute('name', $data->name);
+                    $node->setAttribute('name', htmlspecialchars($data->name, ENT_QUOTES, "UTF-8", false));
                     $node->setAttribute('parent_id', $data->parent_id);
     
                     // Internally mark the id as 'xml:id' for getElementById to work. Adding xml:id manually to the tag will cause loadXML to throw an error DOMDocument: xml:id is not a NCName in Entity
@@ -164,9 +176,25 @@
                     }
                 };
     
-                if ($structure) {
+                if ($structureOption['type'] === 'nested') {
                     $buildNestedDocument();
+
+                    if ($structureOption['custom']['isolate_vertical']) {
+                        $isolateVertical = function() use ($dom, $root) {
+                            $len = $root->childNodes->length;
+                            for ($i = 0; $i < $len; $i++) {
+                                $parentNode = $root->childNodes[$i];
+
+                                while ($parentNode->childNodes->length > 0) {
+                                    $root->appendChild($parentNode->childNodes[0]);
+                                }
+                            }
+                        };
+
+                        $isolateVertical();
+                    }
                 } else {
+                    // flat
                     $buildFlatDocument();
                 }
     
@@ -194,15 +222,16 @@
                  * @param DOMNode $b
                  * @return bool
                  */
-                $compare = function(DOMNode $a, DOMNode $b) use ($sortOption) {
+                $coll = collator_create($sortOption['collate']);
+                $compare = function(DOMNode $a, DOMNode $b) use ($sortOption, $coll) {
                     // ASC (< 0)    DESC ( > 0)
-                    $attr = !empty($sortOption['attribute']) ? $sortOption['attribute'] : 'id';
-                    $order = !empty($sortOption['order']) ? $sortOption['order'] : 'ASC';
-    
+                    $attr = $sortOption['attribute'];
+                    $order = $sortOption['order'];
+
                     if (strtolower($order) === 'desc') {
-                        return strcmp($a->getAttribute($attr), $b->getAttribute($attr)) > 0;
+                        return collator_compare($coll, $a->getAttribute($attr), $b->getAttribute($attr)) > 0;
                     } else {
-                        return strcmp($a->getAttribute($attr), $b->getAttribute($attr)) < 0;
+                        return collator_compare($coll, $a->getAttribute($attr), $b->getAttribute($attr)) < 0;
                     }
                 };
     
